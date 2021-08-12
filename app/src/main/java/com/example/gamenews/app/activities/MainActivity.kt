@@ -1,7 +1,8 @@
-package com.example.gamenews
+package com.example.gamenews.app.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.gamenews.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

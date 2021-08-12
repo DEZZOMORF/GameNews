@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".app.activities.MainActivity">
 
     <fragment
         android:id="@+id/news_fragment"
-        android:name="com.example.gamenews.NewsFragment"
+        android:name="com.example.gamenews.app.fragments.NewsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
