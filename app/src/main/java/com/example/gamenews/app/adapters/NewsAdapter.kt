@@ -2,12 +2,14 @@ package com.example.gamenews.app.adapters;
 
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.gamenews.R
@@ -15,8 +17,9 @@ import com.example.gamenews.app.models.News
 import java.util.*
 
 
-class NewsAdapter: RecyclerView.Adapter<NewsAdapter.ViewHolder>() {
+class NewsAdapter: RecyclerView.Adapter<NewsAdapter.ViewHolder>(), Filterable {
     private val newsList: MutableList<News> = LinkedList()
+    private val filteredNews: MutableList<News> = LinkedList();
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val tvTitle: TextView = view.findViewById(R.id.title)
@@ -27,7 +30,7 @@ class NewsAdapter: RecyclerView.Adapter<NewsAdapter.ViewHolder>() {
         fun bind(item: News) {
             Glide.with(this.itemView.context).load(item.img).into(ivImage)
             tvTitle.text = item.title
-            tvLink.text = item.click_url?.substringAfterLast("/") ?: ""
+            tvLink.text = item.click_url?.substringAfterLast("/")
             tvTime.text = " - ${item.time}"
             this.itemView.setOnClickListener{ this.itemView.context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(item.click_url))) }
         }
@@ -35,6 +38,7 @@ class NewsAdapter: RecyclerView.Adapter<NewsAdapter.ViewHolder>() {
 
     fun addData(newData : List<News>) {
         newsList.addAll(newData)
+        filteredNews.addAll(newData)
         notifyDataSetChanged()
     }
 
@@ -43,10 +47,39 @@ class NewsAdapter: RecyclerView.Adapter<NewsAdapter.ViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(newsList[position])
+        holder.bind(filteredNews[position])
     }
 
     override fun getItemCount(): Int {
-        return newsList.count()
+        return filteredNews.count()
+    }
+
+    //Filter
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val filteredList: MutableList<News> = ArrayList<News>()
+                if (constraint.toString().isEmpty()) {
+                    filteredList.addAll(newsList)
+                } else {
+                    for (item in newsList) {
+                        if (item.title!!.contains(constraint.toString())) {
+                            filteredList.add(item)
+                        }
+                    }
+                }
+                val filterResults = FilterResults()
+                filterResults.values = filteredList
+                return filterResults
+            }
+
+            @Suppress("UNCHECKED_CAST")
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                filteredNews.clear()
+                filteredNews.addAll(results?.values as Collection<News>)
+                notifyDataSetChanged()
+            }
+
+        }
     }
 }
