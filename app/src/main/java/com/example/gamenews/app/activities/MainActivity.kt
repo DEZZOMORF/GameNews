@@ -7,13 +7,46 @@ import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gamenews.R
 import com.example.gamenews.app.adapters.NewsAdapter
+import com.example.gamenews.app.fragments.NewsFragment
+import com.google.android.material.tabs.TabLayout
 
 var rvNewsList: RecyclerView? = null
+var mTabLayout: TabLayout? = null
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        mTabLayout = findViewById<TabLayout>(R.id.tabLayout)
+        supportFragmentManager.beginTransaction().add(R.id.frgmCont, NewsFragment.newInstance(), "stories").commit()
+        mTabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                when (tab?.position) {
+                    0 -> {
+                        supportFragmentManager.beginTransaction()
+                                .add(R.id.frgmCont, NewsFragment.newInstance(), "stories")
+                                .commit()
+                    }
+                    1 -> { //TODO
+                        supportFragmentManager.findFragmentByTag("stories")?.let {
+                            supportFragmentManager.beginTransaction()
+                                .hide(it)
+                                .commit()
+                        }
+                    }
+                    2 -> { //TODO
+                        supportFragmentManager.findFragmentByTag("stories")?.let {
+                            supportFragmentManager.beginTransaction()
+                                .hide(it)
+                                .commit()
+                        }
+                    }
+                }
+            }
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

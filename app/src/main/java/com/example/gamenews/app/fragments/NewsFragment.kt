@@ -22,6 +22,12 @@ class NewsFragment : Fragment() {
     private lateinit var viewModel: NewsViewModel
     private var newsAdapter: NewsAdapter = NewsAdapter()
 
+    companion object {
+        fun newInstance(): NewsFragment {
+            return NewsFragment()
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_news, container, false)
         return view
@@ -32,7 +38,7 @@ class NewsFragment : Fragment() {
         rvNewsList = view.findViewById<RecyclerView>(R.id.rv_news_list)
         viewModel = ViewModelProvider(this).get(NewsViewModel::class.java)
         setupAdapter(view)
-        addData()
+        addData ()
     }
 
     private fun setupAdapter(view: View) {
